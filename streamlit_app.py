@@ -1,10 +1,8 @@
 import streamlit as st
 from openai import OpenAI
-import os
 
-# --- CONFIGURAÇÃO DE SEGURANÇA ---
-# O código busca a chave nas "Secrets" (TOML) ou Variáveis de Ambiente
-api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+# O Streamlit busca automaticamente nos 'Secrets' que você acabou de salvar
+api_key = st.secrets["OPENAI_API_KEY"]
 client = OpenAI(api_key=api_key)
 
 # --- LAYOUT DO APP ---
