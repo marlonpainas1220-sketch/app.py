@@ -1,8 +1,20 @@
+[server]
+# Otimiza para rodar na nuvem sem travar
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+address = "0.0.0.0"
+port = 8501
+
 [theme]
+# Cores neon para o seu estúdio de IA
 primaryColor = "#ff00cc"
 backgroundColor = "#0b0e14"
 secondaryBackgroundColor = "#1e1e26"
 textColor = "#ffffff"
+font = "sans serif"
 
-[server]
-headless = true
+[browser]
+# Remove o menu desnecessário e o rodapé "Made with Streamlit"
+gatherUsageStats = false
+showFooter = false
