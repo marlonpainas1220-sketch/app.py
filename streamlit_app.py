@@ -1,46 +1,41 @@
 import streamlit as st
 from openai import OpenAI
-import os
 
-# 1. Configuração inicial (DEVE ser a primeira linha de comando Streamlit)
-st.set_page_config(page_title="IA Star Studio", layout="wide")
+# 1. Configuração de Página (Sempre no topo)
+st.set_page_config(page_title="IA Influencer Studio", layout="wide")
 
-# 2. Busca a chave nos Secrets do Streamlit
+# 2. Conexão com a Chave dos Secrets
 try:
-    api_key = st.secrets["OPENAI_API_KEY"]
-    client = OpenAI(api_key=api_key)
-except Exception:
-    st.error("❌ Erro: Chave 'OPENAI_API_KEY' não encontrada nos Secrets do Streamlit.")
+    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+except Exception as e:
+    st.error("Erro na chave! Verifique os Secrets no painel do Streamlit.")
     st.stop()
 
-# 3. Interface Visual
-st.title("🎤 AI Content Studio")
+# 3. Interface do App
+st.title("🎤 Estúdio da Cantora IA")
 
 with st.sidebar:
-    st.header("🧬 DNA da Modelo")
-    cabelo = st.text_input("Cabelo", "Rosa pastel")
-    rosto = st.text_input("Rosto", "Olhos verdes")
+    st.header("🧬 DNA Visual")
+    cabelo = st.text_input("Cabelo", "Longo e Rosa")
+    rosto = st.text_input("Rosto", "Traços finos, olhos verdes")
     st.divider()
-    gerar = st.button("🚀 PRODUZIR AGORA")
+    botao = st.button("🚀 GERAR POST")
 
-briefing = st.text_area("O que ela está fazendo?", placeholder="Ex: No palco de um show...")
+cena = st.text_area("O que ela está fazendo?", "Gravando um clipe no estúdio")
 
-if gerar:
-    if not briefing:
-        st.warning("Descreva a cena.")
-    else:
-        with st.spinner("✨ Criando..."):
-            try:
-                # Gerar Imagem
-                prompt_f = f"Photo of a woman, {cabelo}, {rosto}. Action: {briefing}. 8k, realistic."
-                img_resp = client.images.generate(model="dall-e-3", prompt=prompt_f)
-                st.image(img_resp.data[0].url)
-                
-                # Gerar Texto
-                txt_resp = client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[{"role": "user", "content": f"Legenda para: {briefing}"}]
-                )
-                st.success(txt_resp.choices[0].message.content)
-            except Exception as e:
-                st.error(f"Erro na Produção: {e}")
+if botao:
+    with st.spinner("Criando..."):
+        try:
+            # Gerar Imagem
+            prompt = f"Professional photo of a woman, {cabelo}, {rosto}. Action: {cena}. 8k photorealistic."
+            res_img = client.images.generate(model="dall-e-3", prompt=prompt)
+            st.image(res_img.data[0].url)
+            
+            # Gerar Texto
+            res_txt = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "user", "content": f"Legenda curta para Instagram sobre: {cena}"}]
+            )
+            st.success(res_txt.choices[0].message.content)
+        except Exception as e:
+            st.error(f"Erro: {e}")
