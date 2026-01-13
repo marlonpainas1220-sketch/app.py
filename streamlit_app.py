@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="IA Star Studio", layout="wide")
 from openai import OpenAI
 
 # 1. Configuração de Página (Sempre no topo)
