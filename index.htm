@@ -33,17 +33,23 @@
 
         <section class="glass p-8 rounded-3xl mb-12 relative overflow-hidden">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div onclick="this.style.borderColor='#22c55e'; alert('Vídeo de Estética Carregado!')" class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all">
+                <div class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all relative">
+                    <input type="file" accept="video/*" onchange="handleVideoUpload(event, 'estetica')" class="absolute inset-0 opacity-0 cursor-pointer" />
                     <i class="fas fa-video text-3xl mb-4 text-slate-600"></i>
                     <p class="text-sm font-bold uppercase tracking-tighter">Estética & Visual</p>
+                    <p class="text-xs text-slate-500 mt-2">Clique para upload</p>
                 </div>
-                <div onclick="this.style.borderColor='#22c55e'; alert('Referência de Voz Recebida!')" class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all">
+                <div class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all relative">
+                    <input type="file" accept="video/*" onchange="handleVideoUpload(event, 'voz')" class="absolute inset-0 opacity-0 cursor-pointer" />
                     <i class="fas fa-microphone text-3xl mb-4 text-slate-600"></i>
                     <p class="text-sm font-bold uppercase tracking-tighter">Voz & Oratória</p>
+                    <p class="text-xs text-slate-500 mt-2">Clique para upload</p>
                 </div>
-                <div onclick="this.style.borderColor='#22c55e'; alert('Padrão de Edição Identificado!')" class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all">
+                <div class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all relative">
+                    <input type="file" accept="video/*" onchange="handleVideoUpload(event, 'ritmo')" class="absolute inset-0 opacity-0 cursor-pointer" />
                     <i class="fas fa-bolt text-3xl mb-4 text-slate-600"></i>
                     <p class="text-sm font-bold uppercase tracking-tighter">Ritmo & Edição</p>
+                    <p class="text-xs text-slate-500 mt-2">Clique para upload</p>
                 </div>
             </div>
 
@@ -77,17 +83,142 @@
     </main>
 
     <script>
+        let uploadedVideos = [];
+
+        // Handle video upload
+        function handleVideoUpload(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('video', file);
+
+            // Visual feedback
+            event.target.parentElement.style.borderColor = '#06b6d4';
+            event.target.parentElement.querySelector('i').classList.add('text-cyan-400');
+            
+            fetch('/api/upload-video', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    event.target.parentElement.style.borderColor = '#22c55e';
+                    uploadedVideos.push({ type, filename: data.filename });
+                    console.log('Upload successful:', data);
+                } else {
+                    event.target.parentElement.style.borderColor = '#ef4444';
+                    console.error('Upload failed:', data);
+                }
+            })
+            .catch(error => {
+                event.target.parentElement.style.borderColor = '#ef4444';
+                console.error('Error uploading video:', error);
+            });
+        }
+
         function startDNA() {
             const loading = document.getElementById('loading');
             loading.classList.remove('hidden');
-            setTimeout(() => {
+            
+            // Call the API to process DNA
+            fetch('/api/processar-dna', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    videos: uploadedVideos.length > 0 ? uploadedVideos : ["estetica.mp4", "voz.mp4", "ritmo.mp4"]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                setTimeout(() => {
+                    if (data.status === 'success') {
+                        const perfil = data.perfil;
+                        loading.innerHTML = `
+                            <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
+                            <h2 class="text-2xl font-bold uppercase tracking-tighter">DNA Sincronizado!</h2>
+                            <div class="mt-4 text-left max-w-md">
+                                <p class="text-slate-300 mb-2"><strong>Estilo:</strong> ${perfil.estilo}</p>
+                                <p class="text-slate-300 mb-2"><strong>Voz:</strong> ${perfil.voz}</p>
+                                <p class="text-slate-300 mb-2"><strong>Ritmo:</strong> ${perfil.ritmo_corte}</p>
+                                ${perfil.analise_completa ? `<p class="text-slate-400 mt-4 text-sm">${perfil.analise_completa}</p>` : ''}
+                                ${perfil.nota ? `<p class="text-yellow-400 mt-2 text-xs">${perfil.nota}</p>` : ''}
+                            </div>
+                            <button onclick="gerarConteudo('${perfil.estilo}', '${perfil.voz}', '${perfil.ritmo_corte}')" class="mt-6 px-6 py-3 accent-gradient rounded-lg font-bold">Gerar Conteúdo</button>
+                            <button onclick="location.reload()" class="mt-4 text-cyan-400 underline uppercase text-xs font-bold">Novo Treinamento</button>
+                        `;
+                    } else {
+                        loading.innerHTML = `
+                            <i class="fas fa-exclamation-circle text-6xl text-red-400 mb-4"></i>
+                            <h2 class="text-2xl font-bold uppercase tracking-tighter">Erro no Processamento</h2>
+                            <p class="text-slate-400 mt-2">Ocorreu um erro ao processar o DNA.</p>
+                            <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Tentar Novamente</button>
+                        `;
+                    }
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error processing DNA:', error);
                 loading.innerHTML = `
-                    <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
-                    <h2 class="text-2xl font-bold uppercase tracking-tighter">DNA Sincronizado!</h2>
-                    <p class="text-slate-400 mt-2">O motor de inteligência assimilou o perfil criativo.</p>
-                    <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Novo Treinamento</button>
+                    <i class="fas fa-exclamation-circle text-6xl text-red-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold uppercase tracking-tighter">Erro de Conexão</h2>
+                    <p class="text-slate-400 mt-2">Não foi possível conectar ao servidor.</p>
+                    <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Tentar Novamente</button>
                 `;
-            }, 3500);
+            });
+        }
+
+        function gerarConteudo(estilo, voz, ritmo) {
+            const loading = document.getElementById('loading');
+            loading.innerHTML = `
+                <div class="loader rounded-full border-4 border-t-4 border-slate-800 h-12 w-12 mb-4"></div>
+                <p class="text-cyan-400 font-bold animate-pulse italic">GERANDO CONTEÚDO...</p>
+            `;
+
+            fetch('/api/gerar-conteudo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tema: 'Tendências de Moda IA 2026',
+                    perfil: {
+                        estilo: estilo,
+                        voz: voz,
+                        ritmo_corte: ritmo
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    loading.innerHTML = `
+                        <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
+                        <h2 class="text-2xl font-bold uppercase tracking-tighter">Conteúdo Gerado!</h2>
+                        <div class="mt-4 max-w-2xl text-left bg-slate-900 p-6 rounded-xl">
+                            <p class="text-slate-300 whitespace-pre-wrap">${data.resultado}</p>
+                        </div>
+                        <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Novo Projeto</button>
+                    `;
+                } else {
+                    loading.innerHTML = `
+                        <i class="fas fa-exclamation-circle text-6xl text-red-400 mb-4"></i>
+                        <h2 class="text-2xl font-bold uppercase tracking-tighter">Erro ao Gerar Conteúdo</h2>
+                        <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Tentar Novamente</button>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error generating content:', error);
+                loading.innerHTML = `
+                    <i class="fas fa-exclamation-circle text-6xl text-red-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold uppercase tracking-tighter">Erro de Conexão</h2>
+                    <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Tentar Novamente</button>
+                `;
+            });
         }
     </script>
 </body>
