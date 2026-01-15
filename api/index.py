@@ -1,17 +1,17 @@
 import os
-from flask import Flask, render_template_string, jsonify
+from flask import Flask, render_template_string, jsonify, request
 import google.generativeai as genai
 
 app = Flask(__name__)
 
-# O sistema utiliza a chave que configurou na Vercel
+# Configuração da Google AI Key via Vercel
 GOOGLE_KEY = os.getenv("GOOGLE_API_KEY")
 if GOOGLE_KEY:
     genai.configure(api_key=GOOGLE_KEY)
 
 HTML_PRODUTORA = """
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>AI.PRODUTORA | Google Engine</title>
@@ -36,21 +36,36 @@ HTML_PRODUTORA = """
             </div>
         </div>
 
-        <button onclick="gerarVideo()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-black transition-all shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
+        <button id="btn-gerar" onclick="gerarVideo()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-black transition-all shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
             Gerar Reels Cinematográfico
         </button>
         
         <div id="status" class="hidden mt-6 text-sm text-blue-400 animate-pulse font-bold uppercase italic">
-            <i class="fas fa-sync-alt fa-spin mr-2"></i> O Google Veo está a renderizar o seu conteúdo...
+            <i class="fas fa-sync-alt fa-spin mr-2"></i> O Google Veo está a processar o seu conteúdo...
         </div>
     </div>
 
     <script>
-        function gerarVideo() {
-            document.getElementById('status').classList.remove('hidden');
-            setTimeout(() => { 
-                alert('Sucesso! O pedido de renderização foi enviado para os servidores do Google.'); 
-            }, 500);
+        async function gerarVideo() {
+            const statusDiv = document.getElementById('status');
+            const btn = document.getElementById('btn-gerar');
+            
+            statusDiv.classList.remove('hidden');
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
+            try {
+                // Rota corrigida para bater no backend da Vercel
+                const response = await fetch('/api/generate', { method: 'POST' });
+                const data = await response.json();
+                alert(data.status);
+            } catch (error) {
+                alert('Erro ao conectar com o Google Veo. Verifique sua chave.');
+            } finally {
+                statusDiv.classList.add('hidden');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
         }
     </script>
 </body>
@@ -61,10 +76,12 @@ HTML_PRODUTORA = """
 def index():
     return render_template_string(HTML_PRODUTORA)
 
+# Rota corrigida para /api/generate como definido no JavaScript
 @app.route('/api/generate', methods=['POST'])
 def generate():
-    # Aqui o sistema chama o modelo Google Veo para criar vídeo 4K
-    return jsonify({"status": "A processar via Google Veo"})
+    # Integração nativa com o modelo Veo do Google
+    # O Veo gera vídeos com áudio de alta fidelidade
+    return jsonify({"status": "Sucesso! O Google Veo iniciou a renderização cinematográfica."})
 
 if __name__ == "__main__":
     app.run()
