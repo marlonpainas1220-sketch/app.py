@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI.CREATOR | DNA Engine</title>
+    <title>AI.PRODUTORA | DNA Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { background: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
         .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
         .accent-gradient { background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%); }
         .loader { border-top-color: #06b6d4; animation: spinner 1.5s linear infinite; }
@@ -17,88 +17,77 @@
 <body class="flex min-h-screen">
 
     <nav class="w-64 bg-slate-950 p-6 border-r border-slate-900 hidden lg:block">
-        <div class="text-2xl font-black mb-10 accent-gradient bg-clip-text text-transparent italic">AI.PRODUTORA</div>
+        <div class="text-2xl font-black mb-10 accent-gradient bg-clip-text text-transparent italic uppercase">AI.Produtora</div>
         <div class="space-y-4">
-            <div class="flex items-center space-x-3 p-3 rounded-lg bg-slate-900 text-cyan-400 cursor-pointer"><i class="fas fa-dna"></i> <span>DNA Engine</span></div>
+            <div class="flex items-center space-x-3 p-3 rounded-lg bg-slate-900 text-cyan-400"><i class="fas fa-dna"></i> <span>DNA Engine</span></div>
             <div class="flex items-center space-x-3 p-3 rounded-lg text-slate-400 hover:bg-slate-900 cursor-pointer"><i class="fas fa-film"></i> <span>Produção</span></div>
-            <div class="flex items-center space-x-3 p-3 rounded-lg text-slate-400 hover:bg-slate-900 cursor-pointer"><i class="fas fa-user-astronaut"></i> <span>Personas</span></div>
+            <div class="flex items-center space-x-3 p-3 rounded-lg text-slate-400 hover:bg-slate-900 cursor-pointer"><i class="fas fa-calendar-check"></i> <span>Agendamento</span></div>
         </div>
     </nav>
 
-    <main class="flex-1 p-8">
+    <main class="flex-1 p-8 overflow-y-auto">
         <header class="mb-12">
-            <h1 class="text-4xl font-bold">Calibragem de <span class="text-cyan-400">DNA</span></h1>
-            <p class="text-slate-400 mt-2">O sistema analisará seus vídeos para clonar seu espírito criativo.</p>
+            <h1 class="text-4xl font-bold">Calibragem de <span class="text-cyan-400">Persona</span></h1>
+            <p class="text-slate-400 mt-2">Treine a sua IA com 3 vídeos para capturar o "espírito" criativo desejado.</p>
         </header>
 
-        <section class="glass p-8 rounded-3xl relative overflow-hidden mb-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="upload-area">
-                <div onclick="handleUpload(1)" class="border-2 border-dashed border-slate-800 p-10 rounded-2xl text-center hover:border-cyan-500 cursor-pointer bg-slate-900/40 transition-all">
-                    <i class="fas fa-video text-3xl mb-4 text-slate-600" id="icon-1"></i>
-                    <p class="text-sm font-bold" id="text-1">Vídeo 1: Estética</p>
+        <section class="glass p-8 rounded-3xl mb-12 relative overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div onclick="this.style.borderColor='#22c55e'; alert('Vídeo de Estética Carregado!')" class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all">
+                    <i class="fas fa-video text-3xl mb-4 text-slate-600"></i>
+                    <p class="text-sm font-bold uppercase tracking-tighter">Estética & Visual</p>
                 </div>
-                <div onclick="handleUpload(2)" class="border-2 border-dashed border-slate-800 p-10 rounded-2xl text-center hover:border-cyan-500 cursor-pointer bg-slate-900/40 transition-all">
-                    <i class="fas fa-microphone text-3xl mb-4 text-slate-600" id="icon-2"></i>
-                    <p class="text-sm font-bold" id="text-2">Vídeo 2: Voz</p>
+                <div onclick="this.style.borderColor='#22c55e'; alert('Referência de Voz Recebida!')" class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all">
+                    <i class="fas fa-microphone text-3xl mb-4 text-slate-600"></i>
+                    <p class="text-sm font-bold uppercase tracking-tighter">Voz & Oratória</p>
                 </div>
-                <div onclick="handleUpload(3)" class="border-2 border-dashed border-slate-800 p-10 rounded-2xl text-center hover:border-cyan-500 cursor-pointer bg-slate-900/40 transition-all">
-                    <i class="fas fa-bolt text-3xl mb-4 text-slate-600" id="icon-3"></i>
-                    <p class="text-sm font-bold" id="text-3">Vídeo 3: Ritmo</p>
+                <div onclick="this.style.borderColor='#22c55e'; alert('Padrão de Edição Identificado!')" class="border-2 border-dashed border-slate-800 p-8 rounded-2xl text-center hover:border-cyan-500 cursor-pointer transition-all">
+                    <i class="fas fa-bolt text-3xl mb-4 text-slate-600"></i>
+                    <p class="text-sm font-bold uppercase tracking-tighter">Ritmo & Edição</p>
                 </div>
             </div>
 
-            <button onclick="startProcessing()" id="btn-sync" class="w-full mt-8 py-4 rounded-xl accent-gradient font-black tracking-widest uppercase text-xs shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
-                Sincronizar Espírito da IA
+            <button onclick="startDNA()" class="w-full mt-8 py-4 rounded-xl accent-gradient font-black uppercase text-xs tracking-widest shadow-lg active:scale-95 transition-all">
+                Sincronizar DNA com a IA
             </button>
 
-            <div id="loading" class="hidden absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center">
-                <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-800 h-12 w-12 mb-4"></div>
-                <p class="text-cyan-400 font-bold animate-pulse">IA ANALISANDO DNA...</p>
+            <div id="loading" class="hidden absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center">
+                <div class="loader rounded-full border-4 border-t-4 border-slate-800 h-12 w-12 mb-4"></div>
+                <p class="text-cyan-400 font-bold animate-pulse italic">A ANALISAR ESPÍRITO DO INFLUENCER...</p>
             </div>
         </section>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="glass p-6 rounded-2xl border border-slate-800">
-                <h3 class="text-slate-400 text-xs font-bold uppercase">Starter</h3>
-                <p class="text-2xl font-bold my-2">R$ 497/mês</p>
-                <button class="w-full mt-4 py-2 border border-slate-700 rounded-lg text-sm hover:bg-white hover:text-black transition">Assinar</button>
+            <div class="glass p-8 rounded-3xl border border-slate-800">
+                <h3 class="font-bold text-slate-500 text-xs uppercase mb-4">Plano Starter</h3>
+                <p class="text-3xl font-bold">R$ 497/mês</p>
+                <button class="w-full mt-6 py-3 rounded-xl border border-slate-700 hover:bg-white hover:text-black transition font-bold">Assinar</button>
             </div>
-            <div class="glass p-6 rounded-2xl border-2 border-purple-600 transform scale-105 shadow-xl shadow-purple-500/10">
-                <h3 class="text-purple-400 text-xs font-bold uppercase">Pro (Mais Vendido)</h3>
-                <p class="text-2xl font-bold my-2">R$ 997/mês</p>
-                <button class="w-full mt-4 py-2 bg-purple-600 rounded-lg text-sm font-bold">Assinar</button>
+            <div class="glass p-8 rounded-3xl border-2 border-cyan-500 scale-105 shadow-2xl shadow-cyan-500/10">
+                <h3 class="font-bold text-cyan-400 text-xs uppercase mb-4">Creator Pro</h3>
+                <p class="text-3xl font-bold">R$ 997/mês</p>
+                <button class="w-full mt-6 py-3 rounded-xl accent-gradient font-bold">Começar Agora</button>
             </div>
-            <div class="glass p-6 rounded-2xl border border-slate-800">
-                <h3 class="text-slate-400 text-xs font-bold uppercase">Agency</h3>
-                <p class="text-2xl font-bold my-2">R$ 2.497/mês</p>
-                <button class="w-full mt-4 py-2 border border-slate-700 rounded-lg text-sm hover:bg-white hover:text-black transition">Assinar</button>
+            <div class="glass p-8 rounded-3xl border border-slate-800">
+                <h3 class="font-bold text-slate-500 text-xs uppercase mb-4">Enterprise</h3>
+                <p class="text-3xl font-bold">R$ 2.497/mês</p>
+                <button class="w-full mt-6 py-3 rounded-xl border border-slate-700 hover:bg-white hover:text-black transition font-bold">Contactar</button>
             </div>
         </div>
     </main>
 
     <script>
-        function handleUpload(id) {
-            const icon = document.getElementById(`icon-${id}`);
-            const text = document.getElementById(`text-${id}`);
-            icon.classList.replace('text-slate-600', 'text-green-400');
-            icon.classList.replace('fa-video', 'fa-check-circle');
-            icon.classList.replace('fa-microphone', 'fa-check-circle');
-            icon.classList.replace('fa-bolt', 'fa-check-circle');
-            text.innerText = "Vídeo Carregado!";
-            text.classList.add('text-green-400');
-        }
-
-        function startProcessing() {
+        function startDNA() {
             const loading = document.getElementById('loading');
             loading.classList.remove('hidden');
             setTimeout(() => {
                 loading.innerHTML = `
-                    <i class="fas fa-check-circle text-5xl text-green-400 mb-4"></i>
-                    <p class="text-white font-bold">DNA SINCRONIZADO!</p>
-                    <p class="text-slate-400 text-sm mt-2">Sua IA agora entende seu espírito.</p>
-                    <button onclick="location.reload()" class="mt-6 text-cyan-400 underline italic">Resetar Sistema</button>
+                    <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold uppercase tracking-tighter">DNA Sincronizado!</h2>
+                    <p class="text-slate-400 mt-2">O motor de inteligência assimilou o perfil criativo.</p>
+                    <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Novo Treinamento</button>
                 `;
-            }, 3000);
+            }, 3500);
         }
     </script>
 </body>
