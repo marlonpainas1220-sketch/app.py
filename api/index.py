@@ -48,17 +48,19 @@ def processar_dna():
     }
     """
     try:
-        data = request.get_json() or {}
+        data = request.get_json(silent=False)
+        if data is None:
+            data = {}
         videos = data.get('videos', ["estetica.mp4", "voz.mp4", "ritmo.mp4"])
         perfil_extraido = processar_dna_influencer(videos)
         return jsonify({
             "status": "success",
             "perfil": perfil_extraido
         })
-    except Exception as e:
+    except Exception:
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Erro ao processar DNA do influencer. Por favor, verifique os dados enviados."
         }), 500
 
 @app.route('/api/gerar-conteudo', methods=['POST'])
@@ -77,7 +79,9 @@ def gerar_conteudo():
     }
     """
     try:
-        data = request.get_json() or {}
+        data = request.get_json(silent=False)
+        if data is None:
+            data = {}
         tema = data.get('tema', 'Tendências de Moda IA 2026')
         perfil = data.get('perfil', {
             "estilo": "High-Energy / Futurista",
@@ -91,10 +95,10 @@ def gerar_conteudo():
             "tema": tema,
             "perfil": perfil
         })
-    except Exception as e:
+    except Exception:
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Erro ao gerar conteúdo. Por favor, verifique os dados enviados."
         }), 500
 
 # Handler para Vercel - expõe o app Flask
