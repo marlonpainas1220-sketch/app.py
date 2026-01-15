@@ -1,21 +1,24 @@
-# 🤖 AI Influencer Produtora Autómata
+# 🤖 AI.PRODUTORA - DNA CONTENT ENGINE
 
-Esta é uma solução **SaaS de ponta a ponta** para a criação de Influenciadores de Inteligência Artificial. 
+Uma plataforma de produção de conteúdo autónomo para influenciadores gerados por Inteligência Artificial.
 
-## 🧠 O Diferencial: DNA Engine
-O sistema permite que o cliente faça upload de **3 vídeos de referência**. A nossa IA analisa o "espírito" do criador (voz, estética e ritmo) para garantir que todo o conteúdo gerado (Reels, Stories, Posts) mantenha a identidade da marca.
+## 🧬 O Conceito "DNA Engine"
+Diferente de geradores genéricos, este sistema utiliza **Análise Multimodal** para processar 3 vídeos de referência do cliente. O motor de IA extrai:
+1. **Estética:** Cores, iluminação e enquadramento.
+2. **Voz:** Oratória, tom e cadência da fala.
+3. **Ritmo:** Estilo de edição e cortes.
 
 ## 🚀 Funcionalidades
-- **DNA Engine:** Análise multimodal de vídeo para clonagem de estilo.
-- **Produção Autónoma:** Geração de scripts, narração e edição via API.
-- **Dashboard Pro:** Interface futurista para gestão de campanhas.
-- **Agendamento:** Integração direta com redes sociais via Make.com.
+- **Treinamento de Persona:** Clonagem de espírito criativo através de vídeo.
+- **Produção Automática:** Geração de Reels, Stories e Posts de forma autónoma.
+- **Painel de Controlo:** Dashboard moderno para gestão de planos e agendamentos.
 
-## 🛠️ Como Instalar
-1. `git clone https://github.com/teu-usuario/ai-produtora`
-2. `pip install -r requirements.txt`
-3. Configura o teu `.env` com as chaves da OpenAI, ElevenLabs e Creatomate.
-4. Abre o `index.html` para ver o Dashboard.
+## 🛠️ Tecnologias
+- **Frontend:** HTML5, Tailwind CSS, JavaScript.
+- **Backend:** Python (OpenAI, Gemini Pro, Creatomate).
+- **Pipeline:** Automação de postagem via Make.com.
 
----
-Desenvolvido para a nova economia de criadores.
+## 📈 Como Executar
+1. Clone este repositório.
+2. Abra o `index.html` em qualquer navegador para ver o Dashboard.
+3. Execute `python main.py` para simular o motor de IA.
