@@ -15,10 +15,40 @@ Diferente de geradores genéricos, este sistema utiliza **Análise Multimodal** 
 
 ## 🛠️ Tecnologias
 - **Frontend:** HTML5, Tailwind CSS, JavaScript.
-- **Backend:** Python (OpenAI, Gemini Pro, Creatomate).
+- **Backend:** Flask + Python (Google Generative AI, OpenAI, Gemini Pro).
+- **Deployment:** Vercel (Serverless Functions).
 - **Pipeline:** Automação de postagem via Make.com.
 
 ## 📈 Como Executar
+
+### Configuração Local
 1. Clone este repositório.
-2. Abra o `index.html` em qualquer navegador para ver o Dashboard.
-3. Execute `python main.py` para simular o motor de IA.
+2. Instale as dependências:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Configure a variável de ambiente `GOOGLE_API_KEY`:
+   ```bash
+   cp .env.example .env
+   # Edite .env e adicione sua Google API Key
+   ```
+4. Execute o servidor Flask:
+   ```bash
+   python api/index.py
+   ```
+5. Acesse http://localhost:5000 no navegador.
+
+### Deployment na Vercel
+1. Instale a Vercel CLI:
+   ```bash
+   npm i -g vercel
+   ```
+2. Configure as variáveis de ambiente no dashboard da Vercel:
+   - `GOOGLE_API_KEY`: Sua chave da API do Google Generative AI
+3. Deploy:
+   ```bash
+   vercel --prod
+   ```
+
+## 🔑 APIs Necessárias
+- **Google Generative AI**: Obtenha sua chave em https://makersuite.google.com/app/apikey
