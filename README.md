@@ -19,6 +19,16 @@ Diferente de geradores genéricos, este sistema utiliza **Análise Multimodal** 
 - **Pipeline:** Automação de postagem via Make.com.
 
 ## 📈 Como Executar
+
+### Execução Local
 1. Clone este repositório.
-2. Abra o `index.html` em qualquer navegador para ver o Dashboard.
-3. Execute `python main.py` para simular o motor de IA.
+2. Abra o `index.htm` em qualquer navegador para ver o Dashboard.
+3. Execute `python api/index.py` para simular o motor de IA.
+
+### Deployment no Vercel
+1. Instale o Vercel CLI: `npm i -g vercel`
+2. Execute `vercel` na raiz do projeto para fazer deploy.
+3. A estrutura está organizada para Vercel Serverless:
+   - `/api/index.py` - Função serverless principal
+   - `requirements.txt` - Dependências Python
+   - `vercel.json` - Configuração de deployment
