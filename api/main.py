@@ -47,7 +47,7 @@ def processar_dna():
 @app.route('/api/gerar-conteudo', methods=['POST'])
 def gerar_conteudo():
     """
-    Endpoint para gerar conteúdo autônomo
+    Endpoint para gerar conteúdo autónomo
     """
     data = request.get_json()
     tema = data.get('tema', 'Tendências de Moda IA 2026')
