@@ -107,6 +107,8 @@ Antes de realizar o deploy, certifique-se de ter:
 3. **Executar o Servidor**
    ```bash
    python api/index.py
+   # Para habilitar modo debug, use:
+   python api/index.py --debug
    ```
    - O servidor estará disponível em `http://localhost:5000`
 

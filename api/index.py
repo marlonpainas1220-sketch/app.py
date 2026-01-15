@@ -107,4 +107,8 @@ handler = app
 
 # Fluxo principal para teste local
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Debug mode only for local development
+    # In production (Vercel), the app runs without this block
+    import sys
+    debug_mode = '--debug' in sys.argv
+    app.run(debug=debug_mode, host='0.0.0.0', port=5000)
