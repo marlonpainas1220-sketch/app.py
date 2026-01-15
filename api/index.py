@@ -1,4 +1,5 @@
 import os
+import json
 
 def processar_dna_influencer(videos):
     """
@@ -25,8 +26,6 @@ def handler(request, context):
     """
     Função handler para Vercel Serverless Functions.
     """
-    import json
-    
     videos_cliente = ["estetica.mp4", "voz.mp4", "ritmo.mp4"]
     perfil_extraido = processar_dna_influencer(videos_cliente)
     resultado = gerar_conteudo_autonomo("Tendências de Moda IA 2026", perfil_extraido)
