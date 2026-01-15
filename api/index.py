@@ -1,8 +1,13 @@
 from flask import Flask, jsonify, request, send_from_directory
 import os
+import logging
 import google.generativeai as genai
 
 app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Configure Google Generative AI
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
@@ -13,7 +18,7 @@ def processar_dna_influencer(videos):
     """
     Analisa os vídeos de referência e extrai os metadados de estilo usando Google Video AI.
     """
-    print(f"🧬 Analisando {len(videos)} ficheiros de referência...")
+    logger.info(f"🧬 Analisando {len(videos)} ficheiros de referência...")
     
     if not GOOGLE_API_KEY:
         return {
@@ -46,7 +51,7 @@ def processar_dna_influencer(videos):
             "analise_completa": response.text if response else "Análise em processamento"
         }
     except Exception as e:
-        print(f"Erro ao processar DNA: {e}")
+        logger.error(f"Erro ao processar DNA: {e}")
         return {
             "estilo": "High-Energy / Futurista",
             "voz": "Frequência média, sotaque neutro",
@@ -58,8 +63,8 @@ def gerar_conteudo_autonomo(tema, perfil):
     """
     Gera o roteiro e prepara a produção automática usando Google Generative AI.
     """
-    print(f"✍️ Gerando roteiro para: {tema}")
-    print(f"🎬 Aplicando filtro de estilo: {perfil.get('estilo', 'Padrão')}")
+    logger.info(f"✍️ Gerando roteiro para: {tema}")
+    logger.info(f"🎬 Aplicando filtro de estilo: {perfil.get('estilo', 'Padrão')}")
     
     if not GOOGLE_API_KEY:
         return "Conteúdo Gerado com Sucesso! Pronto para publicação. (Modo de exemplo - configure GOOGLE_API_KEY)"
@@ -82,7 +87,7 @@ def gerar_conteudo_autonomo(tema, perfil):
         response = model.generate_content(prompt)
         return response.text if response else "Conteúdo Gerado com Sucesso! Pronto para publicação."
     except Exception as e:
-        print(f"Erro ao gerar conteúdo: {e}")
+        logger.error(f"Erro ao gerar conteúdo: {e}")
         return f"Erro ao gerar conteúdo: {str(e)}"
 
 @app.route('/')
@@ -91,10 +96,14 @@ def home():
     Serve the HTML interface
     """
     try:
-        # Try to serve the HTML interface from the root directory
-        with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'index.htm'), 'r', encoding='utf-8') as f:
+        # Serve the HTML interface from a safe, predefined location
+        html_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'index.htm')
+        # Validate the path to prevent directory traversal
+        if not os.path.abspath(html_path).startswith(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))):
+            raise ValueError("Invalid path")
+        with open(html_path, 'r', encoding='utf-8') as f:
             return f.read(), 200, {'Content-Type': 'text/html; charset=utf-8'}
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError):
         # Fallback to API info if HTML not found
         return jsonify({
             "status": "active",
@@ -149,6 +158,10 @@ def gerar_conteudo():
 def upload_video():
     """
     Endpoint para upload de vídeos para análise
+    Nota: Esta é uma implementação básica. Em produção, implemente:
+    - Armazenamento seguro de arquivos (ex: S3, Google Cloud Storage)
+    - Validação de tipo e tamanho de arquivo
+    - Processamento assíncrono
     """
     if 'video' not in request.files:
         return jsonify({
@@ -163,11 +176,11 @@ def upload_video():
             "message": "Nenhum vídeo selecionado"
         }), 400
     
-    # Em produção, você salvaria o vídeo e processaria
-    # Por enquanto, apenas confirmamos o upload
+    # Por enquanto, apenas confirmamos o recebimento do upload
+    # TODO: Implementar armazenamento e processamento de vídeo
     return jsonify({
         "status": "success",
-        "message": f"Vídeo '{video.filename}' recebido com sucesso",
+        "message": f"Vídeo '{video.filename}' recebido com sucesso. Processamento será implementado em produção.",
         "filename": video.filename
     })
 

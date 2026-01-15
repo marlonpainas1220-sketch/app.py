@@ -129,7 +129,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    videos: uploadedVideos.length > 0 ? uploadedVideos : ["estetica.mp4", "voz.mp4", "ritmo.mp4"]
+                    videos: uploadedVideos.length > 0 ? uploadedVideos : []
                 })
             })
             .then(response => response.json())
@@ -137,19 +137,31 @@
                 setTimeout(() => {
                     if (data.status === 'success') {
                         const perfil = data.perfil;
+                        // Escape HTML to prevent XSS
+                        const escapeHtml = (text) => {
+                            const div = document.createElement('div');
+                            div.textContent = text;
+                            return div.innerHTML;
+                        };
+                        
                         loading.innerHTML = `
                             <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
                             <h2 class="text-2xl font-bold uppercase tracking-tighter">DNA Sincronizado!</h2>
                             <div class="mt-4 text-left max-w-md">
-                                <p class="text-slate-300 mb-2"><strong>Estilo:</strong> ${perfil.estilo}</p>
-                                <p class="text-slate-300 mb-2"><strong>Voz:</strong> ${perfil.voz}</p>
-                                <p class="text-slate-300 mb-2"><strong>Ritmo:</strong> ${perfil.ritmo_corte}</p>
-                                ${perfil.analise_completa ? `<p class="text-slate-400 mt-4 text-sm">${perfil.analise_completa}</p>` : ''}
-                                ${perfil.nota ? `<p class="text-yellow-400 mt-2 text-xs">${perfil.nota}</p>` : ''}
+                                <p class="text-slate-300 mb-2"><strong>Estilo:</strong> ${escapeHtml(perfil.estilo)}</p>
+                                <p class="text-slate-300 mb-2"><strong>Voz:</strong> ${escapeHtml(perfil.voz)}</p>
+                                <p class="text-slate-300 mb-2"><strong>Ritmo:</strong> ${escapeHtml(perfil.ritmo_corte)}</p>
+                                ${perfil.analise_completa ? `<p class="text-slate-400 mt-4 text-sm">${escapeHtml(perfil.analise_completa)}</p>` : ''}
+                                ${perfil.nota ? `<p class="text-yellow-400 mt-2 text-xs">${escapeHtml(perfil.nota)}</p>` : ''}
                             </div>
-                            <button onclick="gerarConteudo('${perfil.estilo}', '${perfil.voz}', '${perfil.ritmo_corte}')" class="mt-6 px-6 py-3 accent-gradient rounded-lg font-bold">Gerar Conteúdo</button>
+                            <button id="gerarConteudoBtn" class="mt-6 px-6 py-3 accent-gradient rounded-lg font-bold">Gerar Conteúdo</button>
                             <button onclick="location.reload()" class="mt-4 text-cyan-400 underline uppercase text-xs font-bold">Novo Treinamento</button>
                         `;
+                        
+                        // Add event listener safely
+                        document.getElementById('gerarConteudoBtn').addEventListener('click', () => {
+                            gerarConteudo(perfil.estilo, perfil.voz, perfil.ritmo_corte);
+                        });
                     } else {
                         loading.innerHTML = `
                             <i class="fas fa-exclamation-circle text-6xl text-red-400 mb-4"></i>
@@ -195,11 +207,18 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    // Escape HTML to prevent XSS
+                    const escapeHtml = (text) => {
+                        const div = document.createElement('div');
+                        div.textContent = text;
+                        return div.innerHTML;
+                    };
+                    
                     loading.innerHTML = `
                         <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
                         <h2 class="text-2xl font-bold uppercase tracking-tighter">Conteúdo Gerado!</h2>
                         <div class="mt-4 max-w-2xl text-left bg-slate-900 p-6 rounded-xl">
-                            <p class="text-slate-300 whitespace-pre-wrap">${data.resultado}</p>
+                            <p class="text-slate-300 whitespace-pre-wrap">${escapeHtml(data.resultado)}</p>
                         </div>
                         <button onclick="location.reload()" class="mt-8 text-cyan-400 underline uppercase text-xs font-bold">Novo Projeto</button>
                     `;
