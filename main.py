@@ -31,12 +31,13 @@ def processar_dna_influencer(videos):
             content = response.choices[0].message.content
             print(f"✅ Análise via OpenAI: {content}")
             
-            # Retornar análise gerada pela IA
+            # Retornar análise gerada pela IA com indicador de fonte
             return {
-                "estilo": "High-Energy / Futurista (via OpenAI)",
-                "voz": "Frequência média, sotaque neutro (via OpenAI)",
-                "ritmo_corte": "1.2 segundos por transição (via OpenAI)",
-                "analise_completa": content
+                "estilo": "High-Energy / Futurista",
+                "voz": "Frequência média, sotaque neutro",
+                "ritmo_corte": "1.2 segundos por transição",
+                "analise_openai": content,
+                "fonte": "OpenAI GPT-3.5-turbo"
             }
         except Exception as e:
             print(f"⚠️ Erro ao usar OpenAI API: {e}")
@@ -46,7 +47,8 @@ def processar_dna_influencer(videos):
     return {
         "estilo": "High-Energy / Futurista",
         "voz": "Frequência média, sotaque neutro",
-        "ritmo_corte": "1.2 segundos por transição"
+        "ritmo_corte": "1.2 segundos por transição",
+        "fonte": "Modo simulado"
     }
 
 def gerar_conteudo_autonomo(tema, perfil):
