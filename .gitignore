@@ -12,6 +12,9 @@ ENV/
 dist/
 build/
 
+# Environment variables
+.env
+
 # Virtual environments
 pip-log.txt
 pip-delete-this-directory.txt
