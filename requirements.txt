@@ -1,2 +1,6 @@
-streamlit
 openai
+requests
+python-dotenv
+google-generativeai
+gspread
+oauth2client
