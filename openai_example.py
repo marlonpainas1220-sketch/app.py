@@ -1,36 +1,24 @@
 import os
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 
 # Carrega variáveis de ambiente do arquivo .env
 load_dotenv()
 
-# Configure a chave de API
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-def exemplo_openai_completion():
-    """
-    Exemplo simples de uso da API OpenAI usando o modelo de Completion (legado).
-    """
-    try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt="Escreva um exemplo de integração com a API OpenAI.",
-            max_tokens=100
-        )
-        print("=== Exemplo de Completion ===")
-        print(response.choices[0].text.strip())
-        return response.choices[0].text.strip()
-    except Exception as e:
-        print(f"Erro ao chamar API OpenAI (Completion): {e}")
-        return None
+# Cria o cliente OpenAI apenas se a chave estiver configurada
+api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key) if api_key else None
 
 def exemplo_openai_chat():
     """
     Exemplo de uso da API OpenAI usando o modelo Chat (recomendado para GPT-3.5/GPT-4).
     """
+    if not client:
+        print("⚠️ Cliente OpenAI não inicializado. Configure OPENAI_API_KEY.")
+        return None
+        
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Você é um assistente útil especializado em integração de APIs."},
@@ -49,6 +37,10 @@ def gerar_roteiro_com_openai(tema, perfil):
     """
     Gera um roteiro de conteúdo usando OpenAI baseado no tema e perfil.
     """
+    if not client:
+        print("⚠️ Cliente OpenAI não inicializado. Configure OPENAI_API_KEY.")
+        return None
+        
     try:
         prompt = f"""
         Crie um roteiro de conteúdo para redes sociais com as seguintes características:
@@ -61,7 +53,7 @@ def gerar_roteiro_com_openai(tema, perfil):
         O roteiro deve ter entre 30 a 60 segundos de duração e ser engajante.
         """
         
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Você é um criador de conteúdo especializado em roteiros para redes sociais."},
@@ -83,19 +75,16 @@ if __name__ == "__main__":
     print("🚀 Testando Integração OpenAI API\n")
     
     # Verifica se a chave de API está configurada
-    if not openai.api_key or openai.api_key == "your_openai_api_key_here":
+    if not api_key or api_key == "your_openai_api_key_here":
         print("⚠️ ERRO: Configure sua OPENAI_API_KEY no arquivo .env")
         print("Copie o arquivo .env.example para .env e adicione sua chave de API.")
     else:
         print("✓ Chave de API OpenAI configurada\n")
         
-        # Exemplo 1: Completion (modelo legado)
-        exemplo_openai_completion()
-        
-        # Exemplo 2: Chat Completion (recomendado)
+        # Exemplo: Chat Completion (recomendado)
         exemplo_openai_chat()
         
-        # Exemplo 3: Geração de roteiro personalizado
+        # Exemplo: Geração de roteiro personalizado
         perfil_exemplo = {
             "estilo": "High-Energy / Futurista",
             "voz": "Frequência média, sotaque neutro",

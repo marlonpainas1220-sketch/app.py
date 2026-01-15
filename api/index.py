@@ -1,13 +1,14 @@
 from flask import Flask, jsonify, request
 import os
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 
 # Carrega variáveis de ambiente
 load_dotenv()
 
-# Configure a chave de API do OpenAI
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Cria o cliente OpenAI apenas se a chave estiver configurada
+api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key) if api_key else None
 
 app = Flask(__name__)
 
@@ -31,7 +32,7 @@ def gerar_conteudo_autonomo(tema, perfil):
     print(f"🎬 Aplicando filtro de estilo: {perfil['estilo']}")
     
     # Se a chave OpenAI estiver configurada, usar a API
-    if openai.api_key:
+    if client:
         try:
             prompt = f"""
             Crie um roteiro de conteúdo para redes sociais com as seguintes características:
@@ -44,7 +45,7 @@ def gerar_conteudo_autonomo(tema, perfil):
             O roteiro deve ter entre 30 a 60 segundos de duração e ser engajante.
             """
             
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "Você é um criador de conteúdo especializado em roteiros para redes sociais."},
