@@ -22,9 +22,10 @@ def gerar_conteudo_autonomo(tema, perfil):
     return "Conteúdo Gerado com Sucesso! Pronto para publicação."
 
 # Handler para Vercel Serverless
-def handler(request, context):
+def handler(request):
     """
     Função handler para Vercel Serverless Functions.
+    Vercel passa o objeto request com todos os dados necessários.
     """
     videos_cliente = ["estetica.mp4", "voz.mp4", "ritmo.mp4"]
     perfil_extraido = processar_dna_influencer(videos_cliente)
