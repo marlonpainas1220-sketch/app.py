@@ -1,41 +1,32 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
-import edge_tts
-import asyncio
-from gradio_client import Client, handle_file
-import uuid
+import os
 
 app = FastAPI()
 
-# Blindagem contra erros de domínio (CORS)
+# 1. TRAVA DE DOMÍNIO: Só aceita requisições do seu WordPress
+ALLOWED_ORIGINS = [
+    "https://seudominio.com",      # Seu site oficial
+    "https://ia.seudominio.com",   # Seu subdomínio do app
+    "http://localhost:3000"        # Para seus testes locais
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["POST"], # Só aceita envio de dados
     allow_headers=["*"],
 )
 
-@app.post("/api/generate")
-async def generate(data: dict):
-    try:
-        prompt = data.get("prompt")
-        mode = data.get("mode")
-        
-        # Gerador de Voz Grátis
-        voice_file = f"/tmp/{uuid.uuid4()}.mp3"
-        communicate = edge_tts.Communicate(prompt, "pt-BR-FranciscaNeural")
-        await communicate.save(voice_file)
+# 2. TRAVA DE CHAVE: Função que valida a Secret Key
+API_SECRET_KEY = "SUA_CHAVE_SUPER_SECRETA_AQUI" # Mude isto!
 
-        # Integração com LivePortrait (Fisionomia Fixa)
-        if mode == "video":
-            client = Client("Kwai-VGI/LivePortrait")
-            result = client.predict(
-                input_image=handle_file(data.get("face_url")),
-                input_video=handle_file("https://github.com/marlonpainas1220-sketch/Gerado-02-/raw/main/ref.mp4"),
-                api_name="/predict"
-            )
-            return {"status": "success", "url": result}
-            
-        return {"status": "success", "audio": voice_file}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+async def verify_token(x_api_key: str = Header(None)):
+    if x_api_key != API_SECRET_KEY:
+        raise HTTPException(status_code=403, detail="Acesso não autorizado.")
+    return x_api_key
+
+@app.post("/api/generate", dependencies=[Depends(verify_token)])
+async def generate(data: dict):
+    # O código de geração da IA continua aqui...
+    return {"status": "success", "msg": "Processando com segurança"}
