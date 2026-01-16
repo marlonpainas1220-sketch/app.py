@@ -64,3 +64,17 @@
     </script>
 </body>
 </html>
+async function runIA(mode) {
+    const script = document.getElementById('script').value;
+    const SECRET_KEY = "SUA_CHAVE_SUPER_SECRETA_AQUI"; // A mesma que colocou no Python
+
+    const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': SECRET_KEY // Envia a trava de segurança
+        },
+        body: JSON.stringify({ prompt: script, mode: mode })
+    });
+    // ... resto do código
+}
